@@ -1,8 +1,13 @@
 # Hypertrophy Max — Elite AI-Powered Fitness Protocol
 
-![Main Dashboard](Seecrennshot/AnaSayfa.PNG)
+![License](https://img.shields.io/badge/License-MIT-blue.svg) 
+![Backend](https://img.shields.io/badge/Backend-PHP%208.x-777bb4.svg) 
+![Frontend](https://img.shields.io/badge/Frontend-VanillaJS%20%7C%20TailwindCSS-38b2ac.svg) 
+![AI Engine](https://img.shields.io/badge/AI-Cerebras%20Llama%203.1-red.svg)
 
 Hypertrophy Max is an advanced performance platform engineered for serious athletes. It leverages the **Guray Training Protocol** combined with **Cerebras Llama 3.1 AI** to deliver hyper-personalized nutrition strategies, real-time competitive knowledge arenas, and comprehensive biometric tracking in a high-performance dark-mode interface.
+
+![Main Dashboard](Seecrennshot/AnaSayfa.PNG)
 
 ---
 
