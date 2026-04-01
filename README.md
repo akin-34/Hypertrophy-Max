@@ -1,4 +1,4 @@
-# Hypertrophy Max — Elite AI-Powered Fitness Protocol
+# <img src="logo.png" width="30" height="30"> Hypertrophy Max — Elite AI-Powered Fitness Protocol
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg) 
 ![Backend](https://img.shields.io/badge/Backend-PHP%208.x-777bb4.svg) 
