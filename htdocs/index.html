@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hypertrophy Max V1 | @GurayTraining</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            --neon-red: #ff3b3b;
+            --dark-bg: #0b0b0b;
+            --card-bg: #121212;
+            --text-gray: #a1a1aa;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-teko {
+            font-family: 'Teko', sans-serif;
+        }
+
+        .tab-active {
+            background-color: var(--neon-red);
+            color: white;
+            border-color: var(--neon-red);
+            box-shadow: 0 0 20px rgba(255, 59, 59, 0.4);
+        }
+
+        .tab-inactive {
+            background-color: transparent;
+            color: var(--text-gray);
+            border-color: #222;
+        }
+
+        .exercise-card {
+            background-color: var(--card-bg);
+            border: 1px solid #1a1a1a;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .exercise-card:hover {
+            border-color: #333;
+            transform: translateY(-2px);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            background-color: #000;
+            padding-top: 56.25%;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            /* Increased to be above nutritionView */
+            backdrop-filter: blur(12px);
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: #0f0f0f;
+            border: 1px solid #222;
+            width: 100%;
+            max-width: 480px;
+            padding: 30px;
+            border-radius: 24px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        #nutritionView {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .input-style {
+            background: #161616;
+            border: 1px solid #333;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.8rem;
+            text-align: center;
+            font-family: 'Teko', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-style:focus {
+            border-color: var(--neon-red);
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 1px solid #222;
+            border-radius: 12px;
+            background: #141414;
+            color: white;
+            font-family: 'Teko', sans-serif;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .option-btn:hover {
+            border-color: var(--neon-red);
+            background: rgba(255, 59, 59, 0.05);
+        }
+
+        .nav-btn {
+            background: var(--neon-red);
+            color: white;
+            font-family: 'Teko', sans-serif;
+            text-transform: uppercase;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            transition: 0.3s;
+            width: 100%;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .meal-card {
+            background: #141414;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--neon-red);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Auth modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3500;
+            /* Higher than everything */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-card {
+            background: #0f0f0f;
+            border: 1px solid #222;
+            padding: 24px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .small-btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Glassmorphism Macro Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+            opacity: 0.3;
+        }
+
+        .glass-card.protein {
+            color: #3b82f6;
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.2);
+        }
+
+        .glass-card.karb {
+            color: #22c55e;
+            box-shadow: 0 10px 30px -10px rgba(34, 197, 94, 0.2);
+        }
+
+        .glass-card.yag {
+            color: #eab308;
+            box-shadow: 0 10px 30px -10px rgba(234, 179, 8, 0.2);
+        }
+
+        .glass-card.kalori {
+            color: #ef4444;
+            box-shadow: 0 10px 30px -10px rgba(239, 68, 68, 0.2);
+        }
+
+        .macro-label {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+        }
+
+        .macro-value {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1;
+            font-weight: 600;
+        }
+
+        .macro-unit {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-left: 2px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+        }
+
+        /* Saved Plan Card Styles */
+        .saved-plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .saved-plan-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: scale(1.01);
+        }
+
+        .saved-plan-info h4 {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            line-height: 1;
+            margin-bottom: 2px;
+            color: #ef4444;
+            /* Red accent for calories in plans */
+        }
+
+        .saved-plan-date {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+            font-family: 'Roboto', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .saved-plan-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .action-btn.load {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .action-btn.load:hover {
+            background: #22c55e;
+            color: white;
+        }
+
+        .action-btn.pdf {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn.pdf:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="modal-overlay">
+        <div class="modal-content">
+            <button onclick="closeModal()"
+                class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <i class="fas fa-times fa-lg"></i>
+            </button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- AI Nutrition View -->
+    <div id="nutritionView" class="animate-in fade-in duration-500">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
+                <div>
+                    <h2 class="text-3xl md:text-5xl font-teko text-red-500 uppercase italic leading-none">STRATEJİK
+                        BESLENME PLANI
+                    </h2>
+                    <p
+                        class="text-[9px] md:text-[10px] text-gray-500 tracking-[0.2em] md:tracking-[0.3em] uppercase mt-2 font-bold">
+                        V1 PROTOCOL // AI
+                        CORE 2.5 FLASH</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="savePlanBtn" onclick="requireAuthThenSave()"
+                        class="small-btn bg-red-600 text-white font-teko uppercase tracking-widest hover:opacity-80 active:scale-95 transition-all px-4 py-2 text-xs">KAYDET</button>
+                    <button id="pdfBtn" onclick="downloadCurrentPDF()"
+                        class="small-btn bg-white/5 text-gray-200 border border-white/5 hover:bg-white/10 active:scale-95 transition-all px-4 py-2 text-xs">PDF
+                        İndir</button>
+                    <button id="savedPlansBtn" onclick="requireAuthThenShowSaved()"
+                        class="small-btn bg-white/5 text-gray-200 border border-white/5 hover:bg-white/10 active:scale-95 transition-all px-4 py-2 text-xs">KAYDEDİLENLER</button>
+                    <button onclick="closeNutrition()"
+                        class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-gray-400 hover:bg-white/10 hover:text-white active:scale-95 transition-all cursor-pointer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="macroContainer" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"></div>
+            <div id="nutritionTabs" class="flex gap-2 overflow-x-auto pb-4 mb-6 no-scrollbar"></div>
+            <div id="nutritionContent" class="space-y-4 pb-24"></div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="authTitle" class="text-2xl font-teko text-white">Giriş Yap</h3>
+                <button onclick="closeAuth()" class="text-gray-400 hover:text-white"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <div id="authBody" class="space-y-4">
+                <input id="authUser" placeholder="Kullanıcı Adı" class="input-style text-base">
+                <input id="authPass" type="password" placeholder="Parola" class="input-style text-base">
+                <div id="authConfirmWrap" style="display:none;"><input id="authPassConfirm" type="password"
+                        placeholder="Parola (Tekrar)" class="input-style text-base"></div>
+                <div class="pt-2">
+                    <button id="authSubmit" onclick="submitAuth()"
+                        class="nav-btn w-full mb-4 active:scale-95 transition-all">Giriş</button>
+                    <div class="text-center">
+                        <span id="toggleText" class="text-gray-500 text-sm">Hesabın yok mu?</span>
+                        <button id="toggleAuth" onclick="toggleAuthMode()"
+                            class="text-red-500 hover:text-red-400 font-bold ml-2 text-sm uppercase tracking-wider transition-colors">Kayıt
+                            Ol</button>
+                    </div>
+                </div>
+                <p id="authMsg" class="text-sm text-center mt-4 text-yellow-300"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-black/80 backdrop-blur-xl sticky top-0 z-50 border-b border-white/5">
+        <div class="container mx-auto px-4 py-5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <h1 class="text-5xl font-bold tracking-tighter text-white uppercase italic leading-none">
+                    Hypertrophy <span class="text-[#ff3b3b]">Max</span> <span
+                        class="text-xs italic text-gray-600 font-teko tracking-normal">V1.0</span>
+                </h1>
+                <p class="text-[9px] text-gray-500 tracking-[0.4em] uppercase mt-2 font-medium">Kıyamet Protokolü //
+                    @GurayTraining</p>
+            </div>
+            <div class="flex gap-3 w-full md:w-auto">
+                <button onclick="showPurpose()"
+                    class="flex-1 md:flex-none px-5 py-2.5 bg-transparent border border-white/10 text-gray-400 font-teko uppercase tracking-widest text-sm hover:border-red-600 hover:text-red-600 transition-all">PROGRAM
+                    AMACI</button>
+                <button onclick="startNutritionQuiz()"
+                    class="flex-1 md:flex-none px-5 py-2.5 bg-red-600 border border-red-600 text-white font-teko uppercase tracking-widest text-sm hover:bg-red-700 shadow-xl shadow-red-900/30 transition-all">AI
+                    BESLENME KOÇU</button>
+                <button id="accountBtn" onclick="openAccount()"
+                    class="flex-1 md:flex-none px-5 py-2.5 bg-transparent border border-white/10 text-gray-400 font-teko uppercase tracking-widest text-sm hover:border-green-600 hover:text-green-600 transition-all">HESABIM</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-10">
+        <div class="flex flex-wrap justify-center gap-2.5 mb-10" id="dayTabs"></div>
+        <div id="scheduleContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
+        <!-- Extra Section -->
+        <div id="extraSection" class="mt-16 border-t border-white/5 pt-10 hidden">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-teko text-red-500 uppercase italic tracking-widest">* ANTRENMAN SONU
+                        EKSTRASI</h2>
+                    <p class="text-gray-500 text-xs uppercase tracking-widest mt-2">Haftada 2 Gün Herhangi Antrenman
+                        Sonuna Ekle</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="extraContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-black py-12 text-center border-t border-white/5 mt-12">
+        <div class="container mx-auto px-4">
+            <p class="text-gray-600 text-[10px] tracking-[0.4em] uppercase italic mb-2">Designed for elite performance
+            </p>
+            <p class="text-gray-700 text-[9px] tracking-[0.2em] uppercase">© 2024 Hypertrophy Max V1 | @GurayTraining
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Base URL for backend endpoints (auto-detect based on hostname)
+        const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? '' // Use relative URLs for local development
+            : (window.location.protocol + '//' + window.location.host); // Use current domain for production
+        // Date Helper: SQL DATETIME to Localized string
+        function safeFormatDate(str, showTime = true) {
+            if (!str) return '---';
+            const d = new Date(str.replace(/-/g, '/')); // Replace dashes with slashes for Safari compatibility
+            if (isNaN(d.getTime())) return 'Hata';
+            const dateStr = d.toLocaleDateString('tr-TR');
+            if (!showTime) return dateStr;
+            const timeStr = d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            return `${dateStr} ${timeStr}`;
+        }
+
+        // Helper to remove text in parentheses
+        function stripParentheses(text) {
+            if (typeof text !== 'string') return text;
+            return text.replace(/\s*\([^)]*\)/g, '').trim();
+        }
+
+        let currentStep = 1;
+        let userData = {
+            gender: '', // Male / Female
+            age: '', height: '', weight: '',
+            status: '', goal: '', economy: '', supplement: '',
+            path: '' // Naturel vs Anabolic
+        };
+        let aiNutritionPlan = null;
+        let loggedInUser = null;
+        let authMode = 'login'; // or 'register'
+        let lastApiCallTime = 0;
+        const MIN_API_CALL_INTERVAL = 3000; // Minimum 3 seconds between API calls
+
+        function closeModal() { document.getElementById('quizModal').style.display = 'none'; }
+        function closeNutrition() { document.getElementById('nutritionView').style.display = 'none'; }
+
+        function showPurpose() {
+            document.getElementById('quizModal').style.display = 'flex';
+            document.getElementById('modalBody').innerHTML = `
+                <h2 class="text-4xl font-teko text-[#ff3b3b] mb-4 uppercase italic tracking-wider">V1 PROTOKOL AMACI</h2>
+                <div class="text-gray-300 space-y-5 font-light leading-relaxed text-sm">
+                    <p>Bu protokol, maksimum hipertrofi sağlamak için <span class="text-white font-bold">Progressive Overload</span> ve <span class="text-white font-bold">Mekanik Gerilim</span> prensiplerini esas alır.</p>
+                    <p>Haftalık hacim, kas gruplarının toparlanma sürelerine göre bilimsel olarak dağıtılmıştır. Her set tükenişe (Failure) yakın veya tükenişte planlanmıştır.</p>
+                    <p class="border-l-2 border-red-600 pl-4 italic text-xs text-gray-500 uppercase tracking-widest">Halit Akın & Güray Aydın Stratejisi.</p>
+                </div>
+                <button onclick="closeModal()" class="nav-btn mt-8 italic">SİSTEMİ BAŞLAT</button>
+            `;
+        }
+
+        function startNutritionQuiz() {
+            currentStep = 1;
+            document.getElementById('quizModal').style.display = 'flex';
+            renderStep();
+        }
+
+        function nextStep(field, value) {
+            if (field) userData[field] = value;
+            currentStep++;
+            renderStep();
+        }
+
+        function renderStep() {
+            let html = '';
+            const titleClass = "text-3xl font-teko text-[#ff3b3b] mb-6 text-center uppercase italic tracking-widest";
+
+            switch (currentStep) {
+                case 1:
+                    html = `<h2 class="${titleClass}">CİNSİYETİNİZ</h2>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button onclick="nextStep('gender', 'ERKEK')" class="option-btn text-blue-400"><i class="fas fa-mars"></i> ERKEK</button>
+                                <button onclick="nextStep('gender', 'KADIN')" class="option-btn text-pink-400"><i class="fas fa-venus"></i> KADIN</button>
+                            </div>`;
+                    break;
+                case 2:
+                    html = `<h2 class="${titleClass}">YAŞINIZ</h2>
+                            <input type="number" id="ageIn" class="input-style mb-6" placeholder="Örn: 24" value="${userData.age}">
+                            <button onclick="nextStep('age', document.getElementById('ageIn').value)" class="nav-btn italic">DEVAM ET</button>`;
+                    break;
+                case 3:
+                    html = `<h2 class="${titleClass}">BOY VE KİLO</h2>
+                            <div class="flex gap-3 mb-6">
+                                <input type="number" id="hIn" class="input-style flex-1" placeholder="Boy cm" value="${userData.height}">
+                                <input type="number" id="wIn" class="input-style flex-1" placeholder="Kilo kg" value="${userData.weight}">
+                            </div>
+                            <button onclick="userData.height=document.getElementById('hIn').value; nextStep('weight', document.getElementById('wIn').value)" class="nav-btn italic">DEVAM ET</button>`;
+                    break;
+                case 4:
+                    html = `<h2 class="${titleClass}">SUPPLEMENT DURUMU</h2>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button onclick="nextStep('supplement', 'Kullanıyor')" class="option-btn text-blue-400"><i class="fas fa-pills"></i> KULLANIYORUM</button>
+                                <button onclick="nextStep('supplement', 'Kullanmıyor')" class="option-btn text-gray-500"><i class="fas fa-times-circle"></i> KULLANMIYORUM</button>
+                            </div>`;
+                    break;
+                case 5:
+                    html = `<h2 class="${titleClass}">YOL HARİTASI</h2>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button onclick="nextStep('path', 'NATUREL')" class="option-btn text-green-400"><i class="fas fa-leaf"></i> NATUREL (DOĞAL)</button>
+                                <button onclick="nextStep('path', 'ANABOLİK')" class="option-btn text-red-600 border-red-900/40"><i class="fas fa-skull"></i> ANABOLİK (KÜR)</button>
+                            </div>`;
+                    break;
+                case 6:
+                    html = `<h2 class="${titleClass}">MEVCUT DURUMUNUZ</h2>
+                            <div class="grid grid-cols-1 gap-2 max-h-[300px] overflow-y-auto no-scrollbar">
+                                ${['YAĞSIZ KASLI', 'YAĞLI KASLI', 'ORTALAMANIN ÜSTÜ KASLI', 'NORMAL', 'GÖBEKLİ', 'ZAYIF', 'OBEZ'].map(s =>
+                        `<button onclick="nextStep('status', '${s}')" class="option-btn">${s}</button>`).join('')}
+                            </div>`;
+                    break;
+                case 7:
+                    html = `<h2 class="${titleClass}">HEDEFİNİZ NEDİR?</h2>
+                            <div class="grid grid-cols-1 gap-2">
+                                ${['MAKSİMUM KAS', 'MAKSİMUM YAĞSIZ KAS', 'ORTALAMANIN ÜSTÜ KAS', 'FİT', 'YAĞ YAKMA'].map(g =>
+                        `<button onclick="nextStep('goal', '${g}')" class="option-btn">${g}</button>`).join('')}
+                            </div>`;
+                    break;
+                case 8:
+                    html = `<h2 class="${titleClass}">BÜTÇE SEGMENTİ</h2>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button onclick="nextStep('economy', 'ZENGİN')" class="option-btn text-yellow-500">ZENGİN (AVOKADO/ANTRIKOT)</button>
+                                <button onclick="nextStep('economy', 'ZENGİN_SANAN')" class="option-btn text-blue-400">ZENGİN DEĞİL AMA ÖYLE SANIYOR</button>
+                                <button onclick="nextStep('economy', 'ASGARİ')" class="option-btn text-green-400">ASGARİ ÜCRETLİ</button>
+                                <button onclick="nextStep('economy', 'ÖĞRENCİ')" class="option-btn text-orange-400">ÖĞRENCİ</button>
+                                <button onclick="nextStep('economy', 'FAKİR')" class="option-btn text-red-500">FAKİR (MERCİMEK/YUMURTA)</button>
+                            </div>`;
+                    break;
+                case 9:
+                    const isAnabolic = userData.path === 'ANABOLİK';
+                    html = `
+                        <h2 class="${titleClass}">ANALİZ VERİLERİ</h2>
+                        <div class="bg-white/5 p-6 rounded-2xl border border-white/10 mb-8 text-xs uppercase tracking-widest text-gray-400 space-y-3">
+                            <p class="flex justify-between"><span>CİNSİYET:</span> <span class="text-white font-bold">${userData.gender}</span></p>
+                            <p class="flex justify-between"><span>YAŞ:</span> <span class="text-white font-bold">${userData.age}</span></p>
+                            <p class="flex justify-between"><span>BOY / KİLO:</span> <span class="text-white font-bold">${userData.height}cm / ${userData.weight}kg</span></p>
+                            <p class="flex justify-between"><span>MOD:</span> <span class="${isAnabolic ? 'text-red-500' : 'text-green-500'} font-bold">${userData.path}</span></p>
+                            <p class="flex justify-between"><span>MEVCUT FORM:</span> <span class="text-white font-bold">${userData.status}</span></p>
+                            <p class="flex justify-between"><span>HEDEF:</span> <span class="text-white font-bold">${userData.goal}</span></p>
+                            <p class="flex justify-between"><span>BÜTÇE:</span> <span class="text-white font-bold text-red-500">${userData.economy.replace('_', ' ')}</span></p>
+                            <p class="flex justify-between"><span>SUPPLEMENT:</span> <span class="text-white font-bold">${userData.supplement}</span></p>
+                        </div>
+                        <button id="generateBtn" onclick="generateAIResult()" class="nav-btn py-5 text-xl italic tracking-widest shadow-2xl shadow-red-600/40">
+                            <i class="fas fa-bolt mr-2"></i> PROTOKOLÜ OLUŞTUR
+                        </button>
+                    `;
+                    break;
+            }
+            document.getElementById('modalBody').innerHTML = html;
+        }
+
+        async function fetchWithRetry(url, options, retries = 5, backoff = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response;
+            } catch (err) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, backoff));
+                    return fetchWithRetry(url, options, retries - 1, backoff * 2);
+                }
+                throw err;
+            }
+        }
+
+        async function generateAIResult() {
+            const btn = document.getElementById('generateBtn');
+
+            // Rate limiting: Prevent too frequent API calls
+            const now = Date.now();
+            const timeSinceLastCall = now - lastApiCallTime;
+            if (timeSinceLastCall < MIN_API_CALL_INTERVAL) {
+                const waitTime = Math.ceil((MIN_API_CALL_INTERVAL - timeSinceLastCall) / 1000);
+                alert(`Lütfen ${waitTime} saniye bekleyip tekrar deneyin.`);
+                return;
+            }
+            lastApiCallTime = now;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch loading-spinner mr-2"></i> AI CORE 2.0 FLASH VERİLERİ İŞLİYOR...`;
+
+            const systemPrompt = `
+                Sen bir profesyonel vücut geliştirme beslenme koçusun (Guray Training Protocol).
+                Kullanıcının bütçe, fiziksel durum, hedef ve PATH (Naturel vs Anabolik) durumuna göre 7 günlük beslenme planı çıkar.
+                
+                PATH KURALLARI:
+                - NATUREL: Sindirim sağlığını koruyan, protein oranı kilo başı 1.8-2.2g arası, sağlıklı yağlara önem veren bir plan.
+                - ANABOLİK: Protein sentezi çok yüksek olduğu için kilo başı 3g+ protein ve yüksek karbonhidratlı, glikojen depolarını sürekli dolduran agresif bir plan.
+                
+                BÜTÇE KURALLARI:
+                - ZENGİN: Avokado, antrikot, somon, kinoa, yaban mersini ekle.
+                - ZENGİN_SANAN: Ton balığı, fıstık ezmesi, basmati pirinç.
+                - ASGARİ/ÖĞRENCİ: Tavuk göğsü, yumurta, yulaf, patates.
+                - FAKİR: Mercimek, lor peyniri, yumurta, mevsim sebzeleri.
+                
+                Hedeflere göre kalorileri (açık/fazla) ayarla.
+                Yanıtı SADECE JSON formatında ver:
+                {
+                  "macros": {"p": "GRAM", "c": "GRAM", "f": "GRAM", "cal": "KCAL"},
+                  "days": { 
+                    "Pazartesi": [{"meal": "Öğün Adı", "time": "Saat", "foods": ["Besin 1", "Besin 2"]}],
+                    ...
+                  }
+                }
+            `;
+
+            try {
+                // Use backend proxy for secure API key handling
+                const base = typeof BASE_URL !== 'undefined' ? BASE_URL : '';
+                const response = await fetch(`${base}/generate_nutrition_plan.php?v=${Date.now()}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ userData: userData })
+                });
+
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({ error: 'Network error', code: response.status }));
+
+                    // Special handling for rate limit (429)
+                    if (response.status === 429 || err.code === 429) {
+                        const retryAfter = err.retry_after || 60;
+                        const errorMsg = err.error || "AI servisi şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.";
+
+                        // Show user-friendly message
+                        let displayMsg = errorMsg;
+                        if (err.debug) displayMsg += " [DEBUG: " + err.debug + "]";
+
+                        document.getElementById('authMsg').innerText = displayMsg;
+                        document.getElementById('authMsg').style.display = 'block';
+                        document.getElementById('authMsg').style.color = '#f59e0b';
+
+                        // Update button with retry suggestion
+                        btn.innerHTML = `<i class="fas fa-clock mr-2"></i> ⚠️ LÜTFEN ${retryAfter} SANİYE SONRA TEKRAR DENEYİN`;
+                        btn.disabled = false;
+
+                        // Auto-retry after suggested time
+                        setTimeout(() => {
+                            btn.innerHTML = `<i class="fas fa-redo mr-2"></i> TEKRAR DENE`;
+                            document.getElementById('authMsg').innerText = '';
+                        }, retryAfter * 1000);
+
+                        return; // Don't throw error, user can retry manually
+                    }
+
+                    throw new Error(err.error || "Backend API Hatası");
+                }
+
+                const data = await response.json();
+                // Handle both direct response and wrapped response formats
+                let content;
+                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    // Direct Google API response format
+                    content = data.candidates[0].content.parts[0].text;
+                    aiNutritionPlan = JSON.parse(content);
+                } else if (data.macros && data.days) {
+                    // Already parsed JSON response
+                    aiNutritionPlan = data;
+                } else {
+                    throw new Error("Unexpected response format from server");
+                }
+
+                closeModal();
+                showNutritionView();
+            } catch (e) {
+                console.error('AI Error:', e);
+
+                // More user-friendly error messages
+                let errorMsg = e.message;
+                if (e.message.includes('429') || e.message.includes('rate limit')) {
+                    errorMsg = "AI servisi şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.";
+                } else if (e.message.includes('network') || e.message.includes('fetch')) {
+                    errorMsg = "Bağlantı hatası. İnternet bağlantınızı kontrol edip tekrar deneyin.";
+                }
+
+                alert("SİSTEM HATASI: " + errorMsg);
+                btn.innerHTML = "HATA OLUŞTU - TEKRAR DENE";
+                btn.disabled = false;
+            }
+        }
+
+        function showNutritionView() {
+            const view = document.getElementById('nutritionView');
+            view.style.display = 'block';
+            const m = aiNutritionPlan.macros;
+
+            document.getElementById('macroContainer').innerHTML = `
+                <div class="glass-card protein animate-in zoom-in duration-500">
+                    <span class="macro-label">PROTEİN</span>
+                    <div class="macro-value">${stripParentheses(m.p)}<span class="macro-unit">g</span></div>
+                </div>
+                <div class="glass-card karb animate-in zoom-in duration-500 delay-75">
+                    <span class="macro-label">KARB</span>
+                    <div class="macro-value">${stripParentheses(m.c)}<span class="macro-unit">g</span></div>
+                </div>
+                <div class="glass-card yag animate-in zoom-in duration-500 delay-150">
+                    <span class="macro-label">YAĞ</span>
+                    <div class="macro-value">${stripParentheses(m.f)}<span class="macro-unit">g</span></div>
+                </div>
+                <div class="glass-card kalori animate-in zoom-in duration-500 delay-300">
+                    <span class="macro-label">KALORİ</span>
+                    <div class="macro-value">${stripParentheses(m.cal)}<span class="macro-unit">kcal</span></div>
+                </div>
+            `;
+
+            const dayKeys = Object.keys(aiNutritionPlan.days);
+            document.getElementById('nutritionTabs').innerHTML = dayKeys.map((d, i) => `
+                <button onclick="renderNutritionDay('${d}')" class="px-8 py-3 rounded-full border border-white/5 font-teko text-2xl whitespace-nowrap ${i === 0 ? 'tab-active' : 'tab-inactive'} nut-day-tab">${d.toUpperCase()}</button>
+            `).join('');
+            renderNutritionDay(dayKeys[0]);
+        }
+
+        function renderNutritionDay(day) {
+            document.querySelectorAll('.nut-day-tab').forEach(t => {
+                if (t.innerText === day.toUpperCase()) {
+                    t.classList.add('tab-active');
+                    t.classList.remove('tab-inactive');
+                } else {
+                    t.classList.add('tab-inactive');
+                    t.classList.remove('tab-active');
+                }
+            });
+
+            const meals = aiNutritionPlan.days[day];
+            document.getElementById('nutritionContent').innerHTML = meals.map(m => `
+                <div class="meal-card animate-in slide-in-from-bottom-4 duration-300">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-3xl font-teko text-white uppercase italic tracking-wide">${m.meal}</h4>
+                        <span class="px-3 py-1 bg-white/5 rounded-lg text-[10px] text-gray-400 font-mono border border-white/5">${m.time}</span>
+                    </div>
+                    <ul class="space-y-2">
+                        ${m.foods.map(f => `
+                            <li class="text-sm text-gray-300 flex items-start gap-3">
+                                <i class="fas fa-chevron-right text-red-600 mt-1 text-[10px]"></i> 
+                                <span>${stripParentheses(f)}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        // --- Auth and Save / PDF utilities ---
+
+        function openAuth(mode = 'login') {
+            authMode = mode;
+            document.getElementById('authModal').style.display = 'flex';
+            const isLogin = mode === 'login';
+            document.getElementById('authTitle').innerText = isLogin ? 'Giriş Yap' : 'Kayıt Ol';
+            document.getElementById('authSubmit').innerText = isLogin ? 'Giriş Yap' : 'Hesap Oluştur';
+            document.getElementById('toggleText').innerText = isLogin ? 'Hesabın yok mu?' : 'Zaten hesabın var mı?';
+            document.getElementById('toggleAuth').innerText = isLogin ? 'Kayıt Ol' : 'Giriş Yap';
+            document.getElementById('authConfirmWrap').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('authMsg').innerText = '';
+        }
+
+        function closeAuth() { document.getElementById('authModal').style.display = 'none'; }
+
+        function toggleAuthMode() { openAuth(authMode === 'login' ? 'register' : 'login'); }
+
+        async function submitAuth() {
+            const user = document.getElementById('authUser').value.trim();
+            const pass = document.getElementById('authPass').value;
+            if (!user || !pass) {
+                document.getElementById('authMsg').innerText = 'Kullanıcı adı ve parola gerekli.';
+                return;
+            }
+
+            // Ensure BASE_URL exists (set earlier) else fallback to same origin
+            const base = typeof BASE_URL !== 'undefined' ? BASE_URL : '';
+            const url = authMode === 'register' ? `${base}/register.php` : `${base}/login.php`;
+            const payload = { username: user, password: pass };
+
+            if (authMode === 'register') {
+                const pass2 = document.getElementById('authPassConfirm').value;
+                if (pass !== pass2) {
+                    document.getElementById('authMsg').innerText = 'Parolalar eşleşmiyor.';
+                    return;
+                }
+            }
+
+            try {
+                // Add temporary debug header so server writes request payload to register_debug.log
+                const headers = { 'Content-Type': 'application/json' };
+                try { if (location.hostname === 'assetexplorer.gt.tc') headers['X-Debug'] = '1'; } catch (e) { }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers,
+                    body: JSON.stringify(payload)
+                });
+
+                // Check if response is OK
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMsg = 'Bir hata oluştu.';
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        errorMsg = errorJson.error || errorMsg;
+                    } catch (e) {
+                        console.error('Error parsing response:', errorText);
+                    }
+                    document.getElementById('authMsg').innerText = errorMsg;
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (result.error) {
+                    document.getElementById('authMsg').innerText = result.error;
+                } else {
+                    loggedInUser = authMode === 'login' ? result.username : user;
+                    document.getElementById('authMsg').innerText = result.success || 'Başarılı!';
+                    // Update account button if exists
+                    const accountBtn = document.getElementById('accountBtn');
+                    if (accountBtn) accountBtn.innerText = `HESABIM (${loggedInUser})`;
+                    setTimeout(() => { closeAuth(); }, 900);
+                }
+            } catch (e) {
+                console.error('Auth error:', e);
+                document.getElementById('authMsg').innerText = 'Bağlantı hatası: ' + (e.message || 'Bir hata oluştu.');
+            }
+        }
+
+        function requireAuthThenSave() {
+            if (!aiNutritionPlan) { alert('Henüz bir beslenme planı oluşturulmadı.'); return; }
+            if (!loggedInUser) { openAuth('login'); return; }
+            savePlan();
+        }
+
+        async function requireAuthThenShowSaved() {
+            if (!loggedInUser) { openAuth('login'); return; }
+            await showSavedPlans();
+        }
+
+        async function openAccount() {
+            if (loggedInUser) {
+                window.location.href = '/dashboard.php';
+            } else {
+                openAuth('login');
+            }
+        }
+
+        async function checkSession() {
+            try {
+                const base = typeof BASE_URL !== 'undefined' ? BASE_URL : '';
+                const res = await fetch(`${base}/session.php`, { credentials: 'include' });
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && data.username) {
+                    loggedInUser = data.username;
+                    const btn = document.getElementById('accountBtn');
+                    if (btn) btn.innerText = `HESABIM (${loggedInUser})`;
+                }
+            } catch (e) { console.warn('Session check failed', e); }
+        }
+
+        async function savePlan() {
+            try {
+                const response = await fetch(`${BASE_URL}/save_plan.php`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan: { data: aiNutritionPlan, meta: { userData } } })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Plan kaydedildi.');
+                } else {
+                    alert('Kaydetme hatası: ' + (result.error || 'Bilinmeyen bir hata oluştu.'));
+                }
+            } catch (e) { console.error(e); alert('Kaydetme hatası.'); }
+        }
+
+        // Global variable to hold saved plans
+        let savedPlansList = [];
+
+        async function showSavedPlans() {
+            try {
+                const response = await fetch(`${BASE_URL}/get_plans.php`, { credentials: 'include' });
+                const plans = await response.json();
+                if (!plans.length) { alert('Kayıtlı plan yok.'); return; }
+
+                savedPlansList = plans;
+
+                const html = plans.map((p, i) => {
+                    const calories = p.plan_data?.data?.macros?.cal || '---';
+                    const date = safeFormatDate(p.created_at);
+
+                    return `
+                        <div class="saved-plan-card animate-in slide-in-from-bottom-2 duration-300" style="animation-delay: ${i * 50}ms">
+                            <div class="saved-plan-info">
+                                <h4 class="font-teko uppercase italic">${calories} KCAL</h4>
+                                <div class="saved-plan-date">${date}</div>
+                            </div>
+                            <div class="saved-plan-actions">
+                                <button onclick="loadSavedPlanByIndex(${i})" class="action-btn load" title="Yükle">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button onclick="downloadSavedPlanByIndex(${i})" class="action-btn pdf" title="PDF İndir">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fas fa-bookmark text-red-500 text-xl"></i>
+                        <h3 class="text-3xl font-teko text-white uppercase italic tracking-widest">Kayıtlı Planlar</h3>
+                    </div>
+                    <div class="max-h-[60vh] overflow-y-auto no-scrollbar pr-1">
+                        ${html}
+                    </div>
+                `;
+                document.getElementById('quizModal').style.display = 'flex';
+            } catch (e) {
+                console.error(e);
+                alert('Kaydedilen planlar getirilemedi.');
+            }
+        }
+
+        function loadSavedPlanByIndex(index) {
+            if (savedPlansList[index]) {
+                loadSavedPlan(savedPlansList[index].plan_data);
+            }
+        }
+
+        function downloadSavedPlanByIndex(index) {
+            if (savedPlansList[index]) {
+                const p = savedPlansList[index];
+                const date = new Date(p.created_at).toISOString().slice(0, 10);
+                downloadSavedPDF(p.plan_data, date);
+            }
+        }
+
+        function loadSavedPlan(planData) {
+            try {
+                // planData comes from database and has structure: {data: {macros, days}, meta: {userData}}
+                if (planData && planData.data) {
+                    aiNutritionPlan = planData.data;  // The actual nutrition plan with macros and days
+                    userData = planData.meta?.userData || userData;  // User metadata
+
+                    // Close the saved plans modal
+                    document.getElementById('quizModal').style.display = 'none';
+
+                    // Show the nutrition view with the beautiful UI
+                    showNutritionView();
+                } else {
+                    alert('Plan verisi hatalı');
+                }
+            } catch (e) {
+                console.error('Plan yükleme hatası:', e);
+                alert('Plan yüklenirken hata oluştu');
+            }
+        }
+
+        function downloadSavedPDF(planData, date) {
+            if (!planData) return alert('Plan bulunamadı');
+            downloadPlanPDF(planData.data, `${loggedInUser}_plan_${date}.pdf`);
+        }
+
+        function downloadCurrentPDF() {
+            if (!aiNutritionPlan) return alert('İndirilecek plan yok.');
+            const filename = (loggedInUser ? loggedInUser : 'guest') + `_plan_${new Date().toISOString().slice(0, 10)}.pdf`;
+            downloadPlanPDF(aiNutritionPlan, filename);
+        }
+
+        function downloadPlanPDF(plan, filename) {
+            const container = document.createElement('div');
+            container.style.padding = '20px';
+            container.style.background = '#0b0b0b';
+            container.style.color = '#fff';
+            container.innerHTML = `
+                <h1 style="font-family:Teko, sans-serif; color:#ff3b3b">STRATEJİK BESLENME PLANI</h1>
+                <p style="font-size:12px; color:#aaa">Oluşturma: ${new Date().toLocaleString()}</p>
+                <div style="display:flex; gap:12px; margin-top:12px; flex-wrap:wrap;">
+                    <div style="border-left:4px solid #ff3b3b; padding:8px;">ProteİN: ${plan.macros.p} g</div>
+                    <div style="border-left:4px solid #22c55e; padding:8px;">Karbonhidrat: ${plan.macros.c} g</div>
+                    <div style="border-left:4px solid #f59e0b; padding:8px;">Yağ: ${plan.macros.f} g</div>
+                    <div style="border-left:4px solid #ef4444; padding:8px;">Kalori: ${plan.macros.cal} kcal</div>
+                </div>
+                <hr style="margin:12px 0; border-color:#222">
+            `;
+            for (const day of Object.keys(plan.days)) {
+                container.innerHTML += `<h2 style=\"font-family:Teko, sans-serif; color:#fff; margin-top:10px\">${day}</h2>`;
+                const meals = plan.days[day];
+                for (const m of meals) {
+                    container.innerHTML += `<div style=\"margin-bottom:8px;\"><strong>${m.meal} — ${m.time}</strong><ul style=\"margin-left:12px;\">${m.foods.map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+                }
+            }
+            const opt = { margin: 10, filename: filename, html2canvas: { scale: 2, backgroundColor: '#0b0b0b' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+            html2pdf().set(opt).from(container).save();
+        }
+
+        const schedule = {
+            monday: {
+                name: "GÖĞÜS - OMUZ - ARKA KOL",
+                exercises: [
+                    { en: "Plate Loaded Chest Press", tr: "Plaka Yüklü Göğüs İtiş", sets: "2x5-6 Rir1", vid: "Xkmb2N1xeXA" },
+                    { en: "Smith Machine Low Incline Press", tr: "Smith Machine Düşük Eğimli İtiş", sets: "2x5-6 Rir1", vid: "P-buLD8OUIM" },
+                    { en: "Chest Fly Machine", tr: "Göğüs Sıkıştırma Makinesi", sets: "1x6-8 Failure", vid: "6C6n16U43T0" },
+                    { en: "Shoulder Press Machine", tr: "Omuz İtiş Makinesi", sets: "2x6-8 Rir1", vid: "WvLMauqrnK8" },
+                    { en: "Lateral Raise", tr: "Yana Açış", sets: "3x8-10 Failure", vid: "dYrK5IB4i-U" },
+                    { en: "Triceps Pushdown", tr: "Arka Kol İtiş", sets: "2x6-8 Failure", vid: "vI5EKbt8U80" },
+                    { en: "Overhead Rope Extension", tr: "Baş Üstü Halatla Arka Kol", sets: "2x8-10 Failure", vid: "YYtb_I0BBww" }
+                ]
+            },
+            tuesday: {
+                name: "SIRT - ÖN KOL",
+                exercises: [
+                    { en: "Lat Pulldown", tr: "Sırta Çekiş", sets: "2x6-8 Failure", vid: "JGeRYIZdojU" },
+                    { en: "Plate Loaded Wide Grip Row", tr: "Geniş Tutuş Kürek", sets: "3x6-8 Rir1", vid: "mNqH5_a-trw" },
+                    { en: "Cable Row", tr: "Kablolu Kürek", sets: "1x8-10 Failure", vid: "UCXxvVItLoM" },
+                    { en: "Incline Dumbell Curl", tr: "Eğimli Sehpa Bükme", sets: "2x6-8 Failure", vid: "zg3goGwXNMA" },
+                    { en: "Cable Curl", tr: "Kablo Bükme", sets: "2x6-8 Failure", vid: "F3Y03RnVY8Y" },
+                    { en: "Hammer Curl + Reverse Barbell Curl", tr: "Süper Set Bükme", sets: "2x8-10 Failure", vid: "TUX58GM5fRQ" }
+                ]
+            },
+            wednesday: {
+                name: "BACAK",
+                exercises: [
+                    { en: "Leg Press", tr: "Bacak İtiş", sets: "2x6-8 Rir1-2", vid: "yZmx_Ac3880" },
+                    { en: "Smith Machine Squat", tr: "Smith Machine Çökme", sets: "2x6-8 Rir1-2", vid: "-eO_VydErV0" },
+                    { en: "Leg Extension", tr: "Bacak Uzatma", sets: "2x8-10 Failure", vid: "m0FOpMEgero" },
+                    { en: "Seated Leg Curl", tr: "Oturarak Arka Bacak", sets: "3x8-10 Rir1", vid: "Orxowest56U" }
+                ]
+            },
+            friday: {
+                name: "OMUZ - GÖĞÜS - ARKA KOL",
+                exercises: [
+                    { en: "Shoulder Press Machine", tr: "Omuz İtiş Makinesi", sets: "2x6-8 Rir1", vid: "WvLMauqrnK8" },
+                    { en: "Lateral Raise", tr: "Yana Açış", sets: "3x8-10 Failure", vid: "dYrK5IB4i-U" },
+                    { en: "Smith Machine Low Incline Press", tr: "Smith Machine Düşük Eğimli İtiş", sets: "2x5-6 Rir1", vid: "P-buLD8OUIM" },
+                    { en: "Chest Fly Machine", tr: "Göğüs Sıkıştırma Makinesi", sets: "2x6-8 Failure", vid: "6C6n16U43T0" },
+                    { en: "Cable Rear Delt Fly", tr: "Kablolu Arka Omuz", sets: "2x8-10 Failure", vid: "f5V2XHVR3Dg" },
+                    { en: "Triceps Pushdown", tr: "Arka Kol İtiş", sets: "2x6-8 Failure", vid: "vI5EKbt8U80" },
+                    { en: "Overhead Rope Extension", tr: "Baş Üstü Halatla Arka Kol", sets: "2x8-10 Failure", vid: "YYtb_I0BBww" }
+                ]
+            },
+            saturday: {
+                name: "SIRT - BACAK - ÖN KOL",
+                exercises: [
+                    { en: "Plate Loaded Wide Grip Row", tr: "Geniş Tutuş Kürek", sets: "3x6-8 Rir1", vid: "mNqH5_a-trw" },
+                    { en: "Lat Pulldown", tr: "Sırta Çekiş", sets: "3x6-8 Rir1-Failure", vid: "JGeRYIZdojU" },
+                    { en: "Romanian Deadlift", tr: "RDL (Rumen Usulü)", sets: "2x5-6 Rir1-2", vid: "8qGJZ4QPNi8" },
+                    { en: "Cable Curl", tr: "Kablo Bükme", sets: "2x6-8 Failure", vid: "F3Y03RnVY8Y" },
+                    { en: "Hammer Curl + Reverse Barbell Curl", tr: "Süper Set Bükme", sets: "2x8-10 Failure", vid: "TUX58GM5fRQ" },
+                    { en: "Leg Extension", tr: "Bacak Uzatma", sets: "2x6-8 Failure", vid: "m0FOpMEgero" },
+                    { en: "Seated Leg Curl", tr: "Oturarak Arka Bacak", sets: "1x8-10 Failure", vid: "Orxowest56U" }
+                ]
+            }
+        };
+
+        const extraExercises = [
+            { en: "Cable Crunch", tr: "Kablolu Karın Sıkıştırma", sets: "3x10", vid: "ToJeyhydUxU" },
+            { en: "Standing Calf Raise", tr: "Ayakta Kalf Kaldırma", sets: "3x10", vid: "eMTy3qylqnE" }
+        ];
+
+        const dayNames = { monday: "PAZARTESİ", tuesday: "SALI", wednesday: "ÇARŞAMBA", friday: "CUMA", saturday: "CUMARTESİ" };
+        let activeDay = 'monday';
+
+        function renderTabs() {
+            document.getElementById('dayTabs').innerHTML = Object.keys(schedule).map(day => `
+                <button onclick="setDay('${day}')" class="px-6 py-2.5 rounded-full border font-bold text-[11px] tracking-[0.2em] transition-all ${activeDay === day ? 'tab-active' : 'tab-inactive'}">
+                    ${dayNames[day]}
+                </button>
+            `).join('');
+        }
+
+        function setDay(day) { activeDay = day; renderTabs(); renderContent(); }
+
+        function renderContent() {
+            const data = schedule[activeDay];
+            const exercises = data.exercises;
+            document.getElementById('scheduleContent').innerHTML = exercises.map(ex => `
+                <div class="exercise-card animate-in fade-in zoom-in-95 duration-300">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${ex.vid}?modestbranding=1&rel=0&iv_load_policy=3" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-teko text-white uppercase italic tracking-wider leading-none mb-1">${ex.en}</h3>
+                        <p class="text-[11px] text-gray-500 uppercase italic font-teko tracking-widest mb-4 border-b border-white/5 pb-3">${ex.tr}</p>
+                        <div class="bg-black/40 p-3 rounded-xl border border-white/5 flex justify-between items-center">
+                            <span class="text-[10px] text-red-500 font-bold tracking-widest uppercase">HEDEF SET/RPE</span>
+                            <span class="text-sm text-white font-mono font-bold">${ex.sets}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            renderExtras();
+        }
+
+        function renderExtras() {
+            const extraSection = document.getElementById('extraSection');
+            extraSection.classList.remove('hidden');
+            document.getElementById('extraContent').innerHTML = extraExercises.map(ex => `
+                <div class="exercise-card opacity-80 scale-95 md:scale-100">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${ex.vid}?modestbranding=1&rel=0&iv_load_policy=3" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-teko text-white uppercase italic tracking-wider leading-none mb-1">${ex.en}</h3>
+                        <div class="flex justify-between items-center">
+                             <p class="text-[10px] text-gray-500 uppercase">${ex.tr}</p>
+                             <span class="text-xs text-red-500 font-mono font-bold">${ex.sets}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.onload = async () => { await checkSession(); renderTabs(); renderContent(); };
+    </script>
+</body>
+
+</html>

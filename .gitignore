@@ -1,0 +1,9 @@
+htdocs/config.php
+htdocs/php_errors.log
+htdocs/ai_test.php
+.env
+.idea/
+.vscode/
+*.tmp
+*.bak
+publish_to_github.bat
