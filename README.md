@@ -1,62 +1,71 @@
-# 💪 Strategic Nutrition V1 (Programim) — Hyper-Speed AI & Arena
+# Hypertrophy Max — Elite AI-Powered Fitness Protocol
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg) 
-![Backend](https://img.shields.io/badge/Backend-PHP%208.x-777bb4.svg) 
-![Frontend](https://img.shields.io/badge/Frontend-VanillaJS%20%7C%20TailwindCSS-38b2ac.svg) 
-![AI Engine](https://img.shields.io/badge/AI-Cerebras%20Llama%203.1-red.svg) 
+![Main Dashboard](Seecrennshot/AnaSayfa.PNG)
 
-Strategic Nutrition V1, modern fitness dünyası için geliştirilmiş, **Cerebras Llama 3.1 8B** modelinin gücünü kullanan, saniyeler içinde kişiye özel beslenme planları üreten ve sporcuları bir araya getiren hibrit bir platformdur. Sadece bir kalori hesaplayıcı değil, aynı zamanda rekabetçi bir topluluk merkezidir.
+Hypertrophy Max is an advanced performance platform engineered for serious athletes. It leverages the **Guray Training Protocol** combined with **Cerebras Llama 3.1 AI** to deliver hyper-personalized nutrition strategies, real-time competitive knowledge arenas, and comprehensive biometric tracking in a high-performance dark-mode interface.
 
 ---
 
-## 🎨 Öne Çıkan Modüller
+## ⚡ Core Intelligence Modules
 
-### 🧠 AI Beslenme Koçu (Hyper-Speed AI)
-Cerebras'ın inanılmaz düşük gecikmeli (low-latency) altyapısını kullanarak, bütçenize, fiziksel durumunuza ve hedeflerinize (Güray Training Protocol uyumlu) göre 7 günlük beslenme planlarını anlık olarak oluşturur. 
-*   **Akıllı Makro Dengesi**: Anabolik/Naturel seçiminize göre protein ve yağ dengesini AI otomatik ayarlar.
-*   **Bütçe Segmentleri**: Öğrenci menülerinden "zengin" menülere kadar esnek seçenekler.
+### 🧠 AI Nutrition Intelligence (Cerebras Core)
+Generate 7-day tactical nutrition plans in milliseconds. The system adapts to your specific metabolic needs, goals, and even your budget.
+- **Biometric Profiling**: Tailored macros based on current form, age, and activity.
+- **Differentiated Tracks**: Specific algorithms for **Naturel** vs. **Anabolic** protocols.
+- **Economic Optimization**: Specialized meal plans ranging from "Student/Budget" to "Premium/Elite" profiles.
 
-### ⚡ Elite Arena (PvP Quiz)
-Hız ve bilginin birleştiği yer! Diğer kullanıcılara karşı spor bilginizi yarıştırın.
-*   **Gerçek Zamanlı HUD**: Rakibinizin hangi soruda olduğunu ve skorunu canlı olarak takip edin.
-*   **Dinamik Sorular**: AI tarafından anlık üretilen 10 soruluk testler.
+![AI Nutrition Results](Seecrennshot/AI%20beslenme%20SOnuç.PNG)
 
-### 🤝 Topluluk & Sosyal (Live Chat)
-Sporcular yalnız antrenman yapmasın diye geliştirdiğimiz sosyal panel.
-*   **Anlık Mesajlaşma**: Diğer üyelerle sohbet edin, fotoğraf paylaşın.
-*   **Online/Offline Takibi**: Kimlerin online olduğunu görün, Arena'ya meydan okuyun.
+### 🏆 Elite Arena (PvP Knowledge Duel)
+Knowledge is power. Compete against other athletes in a real-time, high-stakes fitness quiz arena.
+- **Real-time HUD**: Monitor your opponent's question progress and score live.
+- **Dynamic Question Sets**: AI-generated questions covering anatomy, nutrition, and training science.
+
+![Elite Arena](Seecrennshot/Yarışma%20online%20anlık.PNG)
+
+### 🤝 Community Hub & Messaging
+A dedicated social space for elite training partners to communicate and challenge each other.
+- **Live Chat**: Instant communication with the fitness community.
+- **Arena Invites**: Instant matchmaking via the integrated lightning-bolt challenge system.
+
+![Community & Chat](Seecrennshot/topluluk%20mesajlaşma%20ve%20yıldırım%20işareti%20ile%20arena%20daveti.PNG)
+
+### 📊 Biometric Analytics
+Data-driven progress tracking for body measurements, weight, and nutrition history.
+- **Visual Progress**: Dynamic tracking of measurements to ensure consistent **Progressive Overload**.
+- **Historical Logs**: Comprehensive records of past AI-generated plans and body metrics.
+
+![Analytics & Tracking](Seecrennshot/kayıtlık%20ölçüm%20ve%20beslenme.PNG)
 
 ---
 
-## 📸 Ekran Görüntüleri
-> [!TIP]
-> Buraya projenin dashboard, arena ve beslenme planı ekranlarından aldığın görselleri eklemeyi unutma!
+## 🛠️ Technical Architecture
+
+| Layer | Technology |
+| :--- | :--- |
+| **Logic** | PHP 8.x (Secure Backend Proxying) |
+| **Intelligence** | Cerebras Inference (Llama 3.1 8B Instruct) |
+| **UI Framework** | TailwindCSS (Ultra-Modern Glassmorphism) |
+| **Database** | MySQL (Relational Data Persistence) |
+| **Export** | HTML2PDF.js (Tactical PDF Generation) |
 
 ---
 
-## 🛠️ Kurulum
+## 🚀 Quick Start & Installation
 
-1.  Bu repoyu bilgisayarınıza klonlayın:
+1.  **Clone Repository**:
     ```bash
     git clone https://github.com/akin-34/Hypertrophy-Max.git
     ```
-2.  `htdocs/config.sample.php` dosyasının adını `config.php` olarak değiştirin.
-3.  Veritabanı bilgilerinizi ve [Cerebras Cloud](https://cloud.cerebras.ai/) API anahtarınızı `config.php` içine girin.
-4.  Bir Web Sunucusu (Apache-PHP) üzerinde çalıştırın.
+2.  **Configuration**:
+    - Rename `htdocs/config.sample.php` to `config.php`.
+    - Insert your **Cerebras API Key** and MySQL credentials.
+3.  **Database Migration**:
+    - Import the included SQL file into your local or production database.
+4.  **Launch**:
+    - Deploy to any Apache/PHP web server environment.
 
 ---
 
-## 💻 Under The Hood (Kullanılan Kodlar)
-
-Bu proje, modern web teknolojilerini bir araya getirerek hem performanslı hem de görsel olarak tatmin edici bir deneyim sunar:
-
-*   **Logic**: PHP 8.x (Backend Proxying & DB Management)
-*   **UI Framework**: TailwindCSS (Modern Glassmorphism Design)
-*   **AI Engine**: Cerebras Inference (Llama 3.1 8B Instruct)
-*   **Client**: Async Fetch API & Vanilla JS
-*   **PDF**: HTML2PDF.js (Müşteri için anlık plan dökümü)
-
----
-
-> [!NOTE]
-> Bu proje, sporcuların gelişimini hızlandırmak için samimi bir hobi projesi olarak geliştirilmiştir. **Progressive Overload** sadece antrenmanda değil, kodun kalitesinde de geçerlidir! 💪🔥
+> [!IMPORTANT]
+> This system is designed for high-performance tracking. Every set, every gram, and every line of code is optimized for maximum efficiency. **Elite Results require Elite Data.** 💪🔥
